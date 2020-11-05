@@ -30,11 +30,13 @@ public class TextEditor {
     private ToolItem toolItemOpen;
     private ToolItem toolItemSave;
     private final String[] ITEMS = {"Deutsch", "English"};
+    private Combo combo;
 
     private void createShell() {
         int numOfCols = 1;
         GridLayout layout = new GridLayout(numOfCols, true);
         shell = new Shell(display);
+        shell.setBounds(500, 500, 1000, 1000);
         shell.setLayout(layout);
     }
 
@@ -79,11 +81,11 @@ public class TextEditor {
         Image saveImage = new Image(display, "src/icons/full/dtool16/save_edit.png");
         toolItemSave.setImage(saveImage);
 
-        Combo combo = new Combo(shell, SWT.DROP_DOWN);
+        combo = new Combo(shell, SWT.DROP_DOWN);
         combo.setItems(ITEMS);
         combo.setText(ITEMS[0]);
 
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER,true, false, 5, 1);
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1);
         toolBar.setLayoutData(gridData);
     }
 
@@ -103,6 +105,10 @@ public class TextEditor {
         fileQuit.addSelectionListener(new SelectionAdapterQuit(shell));
 
         editTextColor.addSelectionListener(new SelectionAdapterColor(text, shell));
+
+        toolItemOpen.addSelectionListener(new SelectionAdapterOpen(text));
+        toolItemSave.addSelectionListener(new SelectionAdapterSave(text));
+
     }
 
     public static TextEditor getEditor() {
