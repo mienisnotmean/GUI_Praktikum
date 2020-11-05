@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="swt-4">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.jdks/swt-4.17-gtk-linux-x86_64" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/.jdks/swt-4.17-gtk-linux-x86_64" />
+    </SOURCES>
+    <jarDirectory url="file://$USER_HOME$/.jdks/swt-4.17-gtk-linux-x86_64" recursive="false" />
+    <jarDirectory url="file://$USER_HOME$/.jdks/swt-4.17-gtk-linux-x86_64" recursive="false" type="SOURCES" />
+  </library>
+</component>
