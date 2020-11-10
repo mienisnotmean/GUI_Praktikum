@@ -1,38 +1,29 @@
 package application;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class FileIO {
-    public static void write(String filename, String content){
 
-        try {
-            FileWriter writer = new FileWriter(filename);
+    public static void write(String filename, String content) throws IOException {
+        FileWriter writer = new FileWriter(filename);
 
-            writer.write(content);
+        writer.write(content);
 
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writer.close();
+
     }
 
-    public static String read(String fileName){
+    public static String read(String fileName) throws IOException {
         StringBuilder content = new StringBuilder();
         String line;
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
 
-            while ((line = br.readLine()) != null) {
-                content.append(line).append('\n');
-            }
-            br.close();
-        } catch (IOException e){
-            e.printStackTrace();
+        while ((line = br.readLine()) != null) {
+            content.append(line).append('\n');
         }
+        br.close();
+
         return content.toString();
     }
 }

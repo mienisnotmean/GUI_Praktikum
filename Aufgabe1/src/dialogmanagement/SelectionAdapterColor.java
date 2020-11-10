@@ -12,21 +12,20 @@ import org.eclipse.swt.widgets.Text;
 public class SelectionAdapterColor extends SelectionAdapter {
 
     private Text text;
-    private Shell shell;
     private Color color;
 
-    public SelectionAdapterColor(Text text, Shell shell) {
+    public SelectionAdapterColor(Text text) {
         this.text = text;
-        this.shell = shell;
     }
 
-    public void widgetSelected(SelectionEvent e) {
-        ColorDialog colorDialog = new ColorDialog(shell, SWT.OPEN);
+    public void widgetSelected(SelectionEvent event) {
+        Shell parent = (Shell)text.getParent();
+        ColorDialog colorDialog = new ColorDialog(parent, SWT.OPEN);
         RGB rgb = colorDialog.open();
         color = text.getForeground();
         if (rgb != null) {
             color.dispose();
-            color = new Color(shell.getDisplay(), rgb);
+            color = new Color(parent.getDisplay(), rgb);
             text.setForeground(color);
         }
     }

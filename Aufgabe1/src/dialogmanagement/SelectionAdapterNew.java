@@ -12,7 +12,7 @@ public class SelectionAdapterNew extends SelectionAdapter {
     public SelectionAdapterNew() {
     }
 
-    public void widgetSelected(SelectionEvent e) {
+    public void widgetSelected(SelectionEvent event) {
         TextEditor gui = TextEditor.getEditor();
         gui.open();
     }

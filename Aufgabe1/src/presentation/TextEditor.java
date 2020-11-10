@@ -1,5 +1,6 @@
 package presentation;
 
+import application.Flag;
 import dialogmanagement.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -7,6 +8,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class TextEditor {
     private Shell shell;
@@ -29,14 +33,20 @@ public class TextEditor {
     private ToolBar toolBar;
     private ToolItem toolItemOpen;
     private ToolItem toolItemSave;
-    private final String[] ITEMS = {"Deutsch", "English"};
-    private Combo combo;
+    private final String[] ITEMS = {"English", "Deutsch"};
+    private Combo comboBox;
+
+    private Flag flag = new Flag();
+
+    private String language = "en";
+    private String country = "US";
+    private Locale currentLocale = new Locale(language, country);
+    private ResourceBundle messages;
 
     private void createShell() {
         int numOfCols = 1;
-        GridLayout layout = new GridLayout(numOfCols, true);
+        GridLayout layout = new GridLayout(numOfCols, false);
         shell = new Shell(display);
-        shell.setBounds(500, 500, 1000, 1000);
         shell.setLayout(layout);
     }
 
@@ -45,33 +55,32 @@ public class TextEditor {
         shell.setMenuBar(menuBar);
 
         fileItem = new MenuItem(menuBar, SWT.CASCADE);
-        fileItem.setText("&File");
+        fileItem.setText(messages.getString("file"));
 
         fileMenu = new Menu(shell, SWT.DROP_DOWN);
         fileNew = new MenuItem(fileMenu, SWT.PUSH);
-        fileNew.setText("&New");
+        fileNew.setText(messages.getString("new"));
         fileOpen = new MenuItem(fileMenu, SWT.PUSH);
-        fileOpen.setText("&Open ...");
+        fileOpen.setText(messages.getString("open"));
         fileSave = new MenuItem(fileMenu, SWT.PUSH);
-        fileSave.setText("&Save ...");
+        fileSave.setText(messages.getString("save"));
         fileQuit = new MenuItem(fileMenu, SWT.PUSH);
-        fileQuit.setText("&Quit");
+        fileQuit.setText(messages.getString("quit"));
 
         fileItem.setMenu(fileMenu);
 
         editItem = new MenuItem(menuBar, SWT.CASCADE);
-        editItem.setText("&Edit");
+        editItem.setText(messages.getString("edit"));
 
         editMenu = new Menu(shell, SWT.DROP_DOWN);
         editTextColor = new MenuItem(editMenu, SWT.PUSH);
-        editTextColor.setText("Text Color");
+        editTextColor.setText(messages.getString("textcolor"));
 
         editItem.setMenu(editMenu);
     }
 
     private void createToolBar() {
-        toolBar = new ToolBar(shell, SWT.SHADOW_OUT);
-
+        toolBar = new ToolBar(shell, SWT.NONE);
 
         toolItemOpen = new ToolItem(toolBar, SWT.PUSH);
         Image openImage = new Image(display, "src/icons/full/obj16/fldr_obj.png");
@@ -81,12 +90,19 @@ public class TextEditor {
         Image saveImage = new Image(display, "src/icons/full/dtool16/save_edit.png");
         toolItemSave.setImage(saveImage);
 
-        combo = new Combo(shell, SWT.DROP_DOWN);
-        combo.setItems(ITEMS);
-        combo.setText(ITEMS[0]);
+        ToolItem sep = new ToolItem(toolBar, SWT.SEPARATOR);
 
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false, 5, 1);
-        toolBar.setLayoutData(gridData);
+        comboBox = new Combo(toolBar, SWT.DROP_DOWN);
+        for (String s: ITEMS) {
+            comboBox.add(s);
+        }
+        comboBox.setText(ITEMS[0]);
+        comboBox.addModifyListener(new ModifyListenerLanguages(messages, fileItem, fileNew, fileOpen, fileSave, fileQuit, editItem, editTextColor));
+        comboBox.pack();
+
+        sep.setWidth(comboBox.getSize().x);
+        sep.setControl(comboBox);
+        toolBar.pack();
     }
 
     private void createText() {
@@ -99,15 +115,19 @@ public class TextEditor {
     }
 
     private void createListener() {
+        text.addModifyListener(modifyEvent -> {
+            flag.setModified(true);
+        });
+
         fileNew.addSelectionListener(new SelectionAdapterNew());
-        fileOpen.addSelectionListener(new SelectionAdapterOpen(text));
-        fileSave.addSelectionListener(new SelectionAdapterSave(text));
-        fileQuit.addSelectionListener(new SelectionAdapterQuit(shell));
+        fileOpen.addSelectionListener(new SelectionAdapterOpen(text, flag));
+        fileSave.addSelectionListener(new SelectionAdapterSave(text, flag));
+        fileQuit.addSelectionListener(new SelectionAdapterQuit(text, flag));
 
-        editTextColor.addSelectionListener(new SelectionAdapterColor(text, shell));
+        editTextColor.addSelectionListener(new SelectionAdapterColor(text));
 
-        toolItemOpen.addSelectionListener(new SelectionAdapterOpen(text));
-        toolItemSave.addSelectionListener(new SelectionAdapterSave(text));
+        toolItemOpen.addSelectionListener(new SelectionAdapterOpen(text, flag));
+        toolItemSave.addSelectionListener(new SelectionAdapterSave(text, flag));
 
     }
 
@@ -119,6 +139,7 @@ public class TextEditor {
     }
 
     public TextEditor() {
+        this.messages = ResourceBundle.getBundle("MessageBundle", currentLocale);
         createShell();
         createMenuBar();
         createToolBar();
@@ -130,6 +151,7 @@ public class TextEditor {
     }
 
     public void open() {
+        shell.setSize(500, 500);
         shell.open();
         while (!shell.isDisposed()) {
             if (!display.readAndDispatch()) {

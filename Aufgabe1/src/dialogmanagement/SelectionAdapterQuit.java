@@ -1,27 +1,53 @@
 package dialogmanagement;
 
+import application.Flag;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public class SelectionAdapterQuit extends SelectionAdapter {
 
-    private Shell shell;
+    private Text text;
+    private Shell parent;
+    private Flag flag;
 
-    public SelectionAdapterQuit(Shell shell) {
-        this.shell = shell;
+    public SelectionAdapterQuit(Text text, Flag flag) {
+        this.text = text;
+        this.parent = (Shell) text.getParent();
+        this.flag = flag;
     }
 
     public void widgetSelected(SelectionEvent e) {
-        MessageBox quitConfirm = new MessageBox(shell, SWT.YES | SWT.NO);
+        if (flag.isModified()) {
+            MessageBox saveConfirm = new MessageBox(parent, SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+            saveConfirm.setMessage("Do you want to save the changes?");
+            int result = saveConfirm.open();
+            switch (result) {
+                case SWT.YES:
+                    SelectionAdapterSave.saveFile(flag, text);
+                    confirmQuit();
+                    break;
+                case SWT.NO:
+                    confirmQuit();
+                    break;
+                case SWT.CANCEL:
+                    break;
+            }
+        } else {
+            confirmQuit();
+        }
+    }
+
+    public void confirmQuit() {
+        MessageBox quitConfirm = new MessageBox(parent, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
         quitConfirm.setMessage("Quit?");
-        quitConfirm.open();
         int result = quitConfirm.open();
         switch (result) {
             case SWT.YES:
-                shell.dispose();
+                parent.dispose();
                 break;
             case SWT.NO:
                 break;
