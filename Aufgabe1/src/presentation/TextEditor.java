@@ -128,7 +128,7 @@ public class TextEditor {
 
         toolItemOpen.addSelectionListener(new SelectionAdapterOpen(text, flag));
         toolItemSave.addSelectionListener(new SelectionAdapterSave(text, flag));
-
+        
     }
 
     public static TextEditor getEditor() {
