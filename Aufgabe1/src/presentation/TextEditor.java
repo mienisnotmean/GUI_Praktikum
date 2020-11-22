@@ -60,12 +60,19 @@ public class TextEditor {
         fileMenu = new Menu(shell, SWT.DROP_DOWN);
         fileNew = new MenuItem(fileMenu, SWT.PUSH);
         fileNew.setText(messages.getString("new"));
+        fileNew.setAccelerator(SWT.CTRL + 'N');
+
         fileOpen = new MenuItem(fileMenu, SWT.PUSH);
         fileOpen.setText(messages.getString("open"));
+        fileOpen.setAccelerator(SWT.CTRL + 'O');
+
         fileSave = new MenuItem(fileMenu, SWT.PUSH);
         fileSave.setText(messages.getString("save"));
+        fileSave.setAccelerator(SWT.CTRL + 'S');
+
         fileQuit = new MenuItem(fileMenu, SWT.PUSH);
         fileQuit.setText(messages.getString("quit"));
+        fileQuit.setAccelerator(SWT.CTRL + 'Q');
 
         fileItem.setMenu(fileMenu);
 
@@ -75,6 +82,7 @@ public class TextEditor {
         editMenu = new Menu(shell, SWT.DROP_DOWN);
         editTextColor = new MenuItem(editMenu, SWT.PUSH);
         editTextColor.setText(messages.getString("textcolor"));
+        editTextColor.setAccelerator(SWT.CTRL + 'C');
 
         editItem.setMenu(editMenu);
     }
@@ -93,7 +101,7 @@ public class TextEditor {
         ToolItem sep = new ToolItem(toolBar, SWT.SEPARATOR);
 
         comboBox = new Combo(toolBar, SWT.DROP_DOWN);
-        for (String s: ITEMS) {
+        for (String s : ITEMS) {
             comboBox.add(s);
         }
         comboBox.setText(ITEMS[0]);
@@ -128,7 +136,7 @@ public class TextEditor {
 
         toolItemOpen.addSelectionListener(new SelectionAdapterOpen(text, flag));
         toolItemSave.addSelectionListener(new SelectionAdapterSave(text, flag));
-        
+
     }
 
     public static TextEditor getEditor() {
@@ -145,8 +153,7 @@ public class TextEditor {
         createToolBar();
         createText();
         createListener();
-
-        assert false;
+        
         shell.pack();
     }
 
